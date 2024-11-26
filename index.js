@@ -1,6 +1,7 @@
 console.log('Starting');
 
 const { Client, GatewayIntentBits } = require('discord.js');
+require('./keep_alive.js');
 
 // Ensure the bot token is available
 const token = process.env.BOT_TOKEN;
