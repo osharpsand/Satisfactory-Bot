@@ -9,7 +9,6 @@ if (!token) {
   console.error('Bot token is missing! Please set BOT_TOKEN in your environment.');
   process.exit(1); // Exit the process if no token is found
 }
-console.log('Token:', token);
 
 // Create a new Discord client with relevant intents
 const client = new Client({
