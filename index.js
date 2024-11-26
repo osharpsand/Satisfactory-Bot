@@ -19,11 +19,8 @@ const client = new Client({
   ],
 });
 
-// When the bot is logged in
-client.once('ready', async () => {
-  console.log('Bot is online!');
-
-  // Register slash commands
+// Function to create and register slash commands
+async function registerCommands() {
   const commands = [
     new SlashCommandBuilder()
       .setName('UpdatePlaytime')
@@ -40,23 +37,14 @@ client.once('ready', async () => {
   .map(command => command.toJSON());
 
   await client.application.commands.set(commands);
-});
+}
 
 // Function to assign a role based on playtime
 async function assignRoleBasedOnPlaytime(member, playtime) {
   try {
-    // Define roles based on playtime
-    let roleName;
-    if (playtime < 10) {
-      roleName = 'Novice Player'; // Less than 10 hours
-    } else if (playtime < 50) {
-      roleName = 'Intermediate Player'; // Between 10 and 50 hours
-    } else {
-      roleName = 'Experienced Player'; // 50+ hours
-    }
-
-    // Fetch the role by name
+    const roleName = getRoleByPlaytime(playtime);
     const role = member.guild.roles.cache.find(role => role.name === roleName);
+    
     if (!role) {
       console.error(`Role '${roleName}' not found in the guild: ${member.guild.name}`);
       return;
@@ -76,11 +64,19 @@ async function assignRoleBasedOnPlaytime(member, playtime) {
   }
 }
 
-// Function to assign a default role when a member joins
+// Helper function to get role name based on playtime
+function getRoleByPlaytime(playtime) {
+  if (playtime < 10) return 'Novice Player';
+  if (playtime < 50) return 'Intermediate Player';
+  return 'Experienced Player';
+}
+
+// Function to assign default role and send a welcome message
 async function assignDefaultRole(member) {
   try {
-    const roleName = 'New Member';  // Adjust role name as needed
+    const roleName = 'New Member'; // Adjust role name as needed
     const role = member.guild.roles.cache.find(role => role.name === roleName);
+    
     if (!role) {
       console.error(`Role '${roleName}' not found in the guild: ${member.guild.name}`);
       return;
@@ -97,14 +93,24 @@ async function assignDefaultRole(member) {
     console.log(`Assigned the '${roleName}' role to ${member.user.tag}`);
 
     // Send a welcome message in the "general" channel
+    await sendWelcomeMessage(member);
+  } catch (error) {
+    console.error(`Error assigning default role or sending welcome message to ${member.user.tag}:`, error);
+  }
+}
+
+// Function to send a welcome message to the general channel
+async function sendWelcomeMessage(member) {
+  try {
     const generalChannel = member.guild.channels.cache.find(channel => channel.name === 'general');
+    
     if (generalChannel) {
-      generalChannel.send(`Welcome to the server, ${member.user.tag}! We're happy to have you here!`);
+      await generalChannel.send(`Welcome to the server, ${member.user.tag}! We're happy to have you here!`);
     } else {
       console.error('No "general" channel found.');
     }
   } catch (error) {
-    console.error(`Error assigning default role or sending welcome message to ${member.user.tag}:`, error);
+    console.error(`Error sending welcome message: ${error}`);
   }
 }
 
@@ -144,6 +150,13 @@ client.on('interactionCreate', async (interaction) => {
   }
 });
 
+// Initialize bot
+client.once('ready', async () => {
+  console.log('Bot is online!');
+  
+  // Register the commands
+  await registerCommands();
+});
+
 // Log in to Discord with your bot token
 client.login(token);
-
