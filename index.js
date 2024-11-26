@@ -66,11 +66,19 @@ async function assignRoleBasedOnPlaytime(member, playtime) {
 
 // Helper function to get role name based on playtime
 function getRoleByPlaytime(playtime) {
-  if (playtime < 10) return 'Novice Player';
-  if (playtime < 50) return 'Intermediate Player';
-  return 'Experienced Player';
-}
+  const playtimeThresholds = [
+    { hours: 10, role: 'Novice Player' },
+    { hours: 50, role: 'Intermediate Player' },
+    { hours: Infinity, role: 'Experienced Player' },
+  ];
 
+  for (const threshold of playtimeThresholds) {
+    if (playtime < threshold.hours) {
+      return threshold.role;
+    }
+  }
+  return null;
+}
 // Function to assign default role and send a welcome message
 async function assignDefaultRole(member) {
   try {
@@ -128,7 +136,15 @@ client.on('interactionCreate', async (interaction) => {
 
   const { commandName } = interaction;
 
-  if (commandName === 'UpdatePlaytime') {
+  if (commandName === 'updateplaytime') {
+    const guildOwner = interaction.guild.ownerId;
+    if (interaction.user.id !== guildOwner) {
+      return interaction.reply({
+        content: 'You do not have permission to use this command.',
+        ephemeral: true,
+      });
+    }
+
     const member = interaction.options.getUser('member');
     const playtime = interaction.options.getInteger('playtime');
 
@@ -142,7 +158,7 @@ client.on('interactionCreate', async (interaction) => {
       // Acknowledge the interaction
       await interaction.reply({
         content: `Updated the role for ${guildMember.user.tag} based on their ${playtime} hours of playtime.`,
-        ephemeral: true, // Only the user who invoked the command will see this
+        ephemeral: true,
       });
     } else {
       await interaction.reply({ content: 'Invalid member or playtime provided.', ephemeral: true });
