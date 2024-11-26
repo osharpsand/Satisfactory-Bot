@@ -23,7 +23,7 @@ const client = new Client({
 async function registerCommands() {
   const commands = [
     new SlashCommandBuilder()
-      .setName('UpdatePlaytime')
+      .setName('updateplaytime')  // Changed to lowercase
       .setDescription('Update a member\'s role based on their playtime')
       .addUserOption(option => 
         option.setName('member')
@@ -33,8 +33,8 @@ async function registerCommands() {
         option.setName('playtime')
           .setDescription('The playtime of the member in hours')
           .setRequired(true)),
-  ]
-  .map(command => command.toJSON());
+]
+.map(command => command.toJSON());
 
   await client.application.commands.set(commands);
 }
