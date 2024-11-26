@@ -1,6 +1,8 @@
 const { Client, GatewayIntentBits } = require('discord.js');
 const keep_alive = require('./keep_alive.js');
 
+console.log('Starting');
+
 // Create a new Discord client
 const client = new Client({
   intents: [
