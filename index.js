@@ -67,13 +67,16 @@ async function assignRoleBasedOnPlaytime(member, playtime) {
 // Helper function to get role name based on playtime
 function getRoleByPlaytime(playtime) {
   const playtimeThresholds = [
-    { hours: 10, role: 'Novice Player' },
-    { hours: 50, role: 'Intermediate Player' },
-    { hours: Infinity, role: 'Experienced Player' },
+    { hours: 24,   role: 'Satisfactory Liker'         },
+    { hours: 50,   role: 'Satisfactory Enjoyer'       },
+    { hours: 100,  role: 'Satisfactory Lover'         },
+    { hours: 250,  role: 'Serious Satisfactory Player'},
+    { hours: 500,  role: 'Satisfactory Addict'        },
+    { hours: 1000, role: 'Satisfactory Completionist' }
   ];
 
   for (const threshold of playtimeThresholds) {
-    if (playtime < threshold.hours) {
+    if (playtime >= threshold.hours) {
       return threshold.role;
     }
   }
@@ -82,7 +85,7 @@ function getRoleByPlaytime(playtime) {
 // Function to assign default role and send a welcome message
 async function assignDefaultRole(member) {
   try {
-    const roleName = 'New Member'; // Adjust role name as needed
+    const roleName = 'Satisfactory Player'; // Adjust role name as needed
     const role = member.guild.roles.cache.find(role => role.name === roleName);
     
     if (!role) {
