@@ -100,9 +100,9 @@ client.on('guildMemberAdd', async (member) => {
   const role = member.guild.roles.cache.find(role => role.name === roleName);
   if (role && !member.roles.cache.has(role.id)) {
     await member.roles.add(role);
-    const generalChannel = member.guild.channels.cache.find(ch => ch.name === 'general');
-    if (generalChannel) {
-      await generalChannel.send(`Welcome to the server, ${member.user.tag}!`);
+    const welcomeChannel = member.guild.channels.cache.find(ch => ch.name === 'welcome');
+    if (welcomeChannel) {
+      await welcomeChannel.send(`Welcome to the server, ${member.user.tag}!`);
     }
   }
 });
