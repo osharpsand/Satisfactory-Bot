@@ -34,19 +34,19 @@ async function registerCommands() {
       .setName('calculatemachinesneeded')
       .setDescription('Calculate machines needed for item production')
       .addStringOption(option =>
-        option.setName('machine name')
+        option.setName('machine_name')
           .setDescription('Name of the machine')
           .setRequired(true))
       .addStringOption(option =>
-        option.setName('item name')
+        option.setName('item_name')
           .setDescription('Name of the item')
           .setRequired(true))
       .addNumberOption(option => 
-        option.setName('items needed')
+        option.setName('items_needed')
           .setDescription('Items to produce per minute')
           .setRequired(true))
       .addNumberOption(option => 
-        option.setName('machine process speed')
+        option.setName('machine_process_speed')
           .setDescription('Items one machine produces per minute')
           .setRequired(true)),
   ].map(command => command.toJSON());
@@ -113,10 +113,10 @@ client.on('interactionCreate', async (interaction) => {
     }
   } else if (commandName === 'calculatemachinesneeded') {
     try {
-      const machineName = interaction.options.getString('machine name');
-      const itemName = interaction.options.getString('item name');
-      const itemsNeeded = interaction.options.getNumber('items needed');
-      const machineProcessSpeed = interaction.options.getNumber('machine process speed');
+      const machineName = interaction.options.getString('machine_name');
+      const itemName = interaction.options.getString('item_name');
+      const itemsNeeded = interaction.options.getNumber('items_needed');
+      const machineProcessSpeed = interaction.options.getNumber('machine_process_speed');
   
       // Validate inputs
       if (!machineName || !itemName || itemsNeeded <= 0 || machineProcessSpeed <= 0) {
