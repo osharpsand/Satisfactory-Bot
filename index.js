@@ -145,7 +145,7 @@ client.on('interactionCreate', async (interaction) => {
       });
     }
   }
-}
+});
 
 client.once('ready', async () => {
   console.log('Bot is online!');
