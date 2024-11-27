@@ -3,27 +3,24 @@ console.log('Starting');
 const { Client, GatewayIntentBits, SlashCommandBuilder } = require('discord.js');
 require('./keep_alive.js');
 
-// Ensure the bot token is available
 const token = process.env.BOT_TOKEN;
 if (!token) {
   console.error('Bot token is missing! Please set BOT_TOKEN in your environment.');
-  process.exit(1); // Exit the process if no token is found
+  process.exit(1);
 }
 
-// Create a new Discord client with relevant intents
 const client = new Client({
   intents: [
-    GatewayIntentBits.Guilds,         // To interact with guilds
-    GatewayIntentBits.GuildMembers,   // To interact with members
-    GatewayIntentBits.GuildMessages,  // To send messages in channels
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildMessages,
   ],
 });
 
-// Function to create and register slash commands
 async function registerCommands() {
   const commands = [
     new SlashCommandBuilder()
-      .setName('updateplaytime')  // Changed to lowercase
+      .setName('updateplaytime')
       .setDescription('Update a member\'s role based on their playtime')
       .addUserOption(option => 
         option.setName('member')
@@ -35,188 +32,127 @@ async function registerCommands() {
           .setRequired(true)),
     new SlashCommandBuilder()
       .setName('calculatemachinesneeded')
-      .setDescription('Calculate the amount of machines required to make a certain amount of items every minute').
+      .setDescription('Calculate machines needed for item production')
       .addStringOption(option =>
         option.setName('machine name')
-          .setDescription('The name of the machine that produces the item')
+          .setDescription('Name of the machine')
           .setRequired(true))
       .addStringOption(option =>
         option.setName('item name')
-          .setDescription('The name of the machine that produces the item')
+          .setDescription('Name of the item')
           .setRequired(true))
-      .addFloatOption(option => 
+      .addNumberOption(option => 
         option.setName('items needed')
-          .setDescription('The amount of items to produce every minute')
+          .setDescription('Items to produce per minute')
           .setRequired(true))
-      .addFloatOption(option => 
+      .addNumberOption(option => 
         option.setName('machine process speed')
-          .setDescription('The amount of items one machine produces every minute')
+          .setDescription('Items one machine produces per minute')
           .setRequired(true)),
-]
-.map(command => command.toJSON());
+  ].map(command => command.toJSON());
 
   await client.application.commands.set(commands);
 }
 
-// Function to assign a role based on playtime
 async function assignRoleBasedOnPlaytime(member, playtime) {
   try {
     const roleName = getRoleByPlaytime(playtime);
     const role = member.guild.roles.cache.find(role => role.name === roleName);
-    
-    if (!role) {
-      console.error(`Role '${roleName}' not found in the guild: ${member.guild.name}`);
-      return;
-    }
+    if (!role) return;
 
-    // Check if the member already has the role
-    if (member.roles.cache.has(role.id)) {
-      console.log(`${member.user.tag} already has the '${roleName}' role.`);
-      return;
+    if (!member.roles.cache.has(role.id)) {
+      await member.roles.add(role);
+      console.log(`Assigned the '${roleName}' role to ${member.user.tag}`);
     }
-
-    // Assign the role to the member
-    await member.roles.add(role);
-    console.log(`Assigned the '${roleName}' role to ${member.user.tag}`);
   } catch (error) {
-    console.error(`Error assigning role to ${member.user.tag}:`, error);
+    console.error(`Error assigning role:`, error);
   }
 }
 
-// Helper function to get role name based on playtime
 function getRoleByPlaytime(playtime) {
-  const playtimeThresholds = [
-    { hours: 24,   role: 'Satisfactory Liker'         },
-    { hours: 50,   role: 'Satisfactory Enjoyer'       },
-    { hours: 100,  role: 'Satisfactory Lover'         },
-    { hours: 250,  role: 'Serious Satisfactory Player'},
-    { hours: 500,  role: 'Satisfactory Addict'        },
-    { hours: 1000, role: 'Satisfactory Completionist' }
+  const thresholds = [
+    { hours: 24, role: 'Satisfactory Liker' },
+    { hours: 50, role: 'Satisfactory Enjoyer' },
+    { hours: 100, role: 'Satisfactory Lover' },
+    { hours: 250, role: 'Serious Satisfactory Player' },
+    { hours: 500, role: 'Satisfactory Addict' },
+    { hours: 1000, role: 'Satisfactory Completionist' },
   ];
-
-  for (const threshold of playtimeThresholds) {
-    if (playtime >= threshold.hours) {
-      return threshold.role;
-    }
-  }
-  return null;
-}
-// Function to assign default role and send a welcome message
-async function assignDefaultRole(member) {
-  try {
-    const roleName = 'Satisfactory Player'; // Adjust role name as needed
-    const role = member.guild.roles.cache.find(role => role.name === roleName);
-    
-    if (!role) {
-      console.error(`Role '${roleName}' not found in the guild: ${member.guild.name}`);
-      return;
-    }
-
-    // Check if the member already has the role
-    if (member.roles.cache.has(role.id)) {
-      console.log(`${member.user.tag} already has the '${roleName}' role.`);
-      return;
-    }
-
-    // Assign the role to the new member
-    await member.roles.add(role);
-    console.log(`Assigned the '${roleName}' role to ${member.user.tag}`);
-
-    // Send a welcome message in the "general" channel
-    await sendWelcomeMessage(member);
-  } catch (error) {
-    console.error(`Error assigning default role or sending welcome message to ${member.user.tag}:`, error);
-  }
+  return thresholds.find(t => playtime >= t.hours)?.role || null;
 }
 
-// Function to send a welcome message to the general channel
-async function sendWelcomeMessage(member) {
-  try {
-    const generalChannel = member.guild.channels.cache.find(channel => channel.name === 'general');
-    
-    if (generalChannel) {
-      await generalChannel.send(`Welcome to the server, ${member.user.tag}! We're happy to have you here!`);
-    } else {
-      console.error('No "general" channel found.');
-    }
-  } catch (error) {
-    console.error(`Error sending welcome message: ${error}`);
-  }
-}
-
-// Event that triggers when a new member joins the server
 client.on('guildMemberAdd', async (member) => {
-  console.log(`New member joined: ${member.user.tag}`);
-  
-  // Assign the default "New Member" role
-  await assignDefaultRole(member);
+  const roleName = 'Satisfactory Player';
+  const role = member.guild.roles.cache.find(role => role.name === roleName);
+  if (role && !member.roles.cache.has(role.id)) {
+    await member.roles.add(role);
+    const generalChannel = member.guild.channels.cache.find(ch => ch.name === 'general');
+    if (generalChannel) {
+      await generalChannel.send(`Welcome to the server, ${member.user.tag}!`);
+    }
+  }
 });
 
-// Handle Slash Command Interaction
 client.on('interactionCreate', async (interaction) => {
   if (!interaction.isCommand()) return;
 
   const { commandName } = interaction;
 
   if (commandName === 'updateplaytime') {
-    const guildOwner = interaction.guild.ownerId;
-    if (interaction.user.id !== guildOwner) {
-      return interaction.reply({
-        content: 'You do not have permission to use this command.',
-        ephemeral: true,
-      });
-    }
-
     const member = interaction.options.getUser('member');
     const playtime = interaction.options.getInteger('playtime');
-
     if (member && playtime !== null) {
-      // Fetch the member from the guild
       const guildMember = await interaction.guild.members.fetch(member.id);
-
-      // Call the function to assign the role based on playtime
       await assignRoleBasedOnPlaytime(guildMember, playtime);
-
-      // Acknowledge the interaction
       await interaction.reply({
-        content: 'Updated the role for ${guildMember.user.tag} based on their ${playtime} hours of playtime.',
+        content: `Updated role for ${guildMember.user.tag} with ${playtime} hours of playtime.`,
         ephemeral: true,
       });
     } else {
-      await interaction.reply({ content: 'Invalid member or playtime provided.', ephemeral: true });
+      await interaction.reply({ content: 'Invalid inputs provided.', ephemeral: true });
     }
+  } else if (commandName === 'calculatemachinesneeded') {
+    try {
+      const machineName = interaction.options.getString('machine name');
+      const itemName = interaction.options.getString('item name');
+      const itemsNeeded = interaction.options.getNumber('items needed');
+      const machineProcessSpeed = interaction.options.getNumber('machine process speed');
+  
+      // Validate inputs
+      if (!machineName || !itemName || itemsNeeded <= 0 || machineProcessSpeed <= 0) {
+        return interaction.reply({
+          content: 'Please ensure all inputs are valid and greater than zero.',
+          ephemeral: true,
+        });
+      }
+  
+      const fullMachinesNeeded = Math.floor(itemsNeeded / machineProcessSpeed);
+      const remainder = itemsNeeded % machineProcessSpeed;
+      const percentOfAMachineNeeded = (remainder / machineProcessSpeed) * 100;
+  
+      // Construct reply
+      let reply = `To make ${itemsNeeded} ${itemName}/min, you need ${fullMachinesNeeded} ${machineName}(s) at 100% efficiency.`;
+      if (remainder > 0) {
+        reply += ` Additionally, one ${machineName} will need to operate at ${percentOfAMachineNeeded.toFixed(5)}% efficiency.`;
+      }
+  
+      await interaction.reply({ content: reply, ephemeral: true });
+    } catch (error) {
+      console.error('Error in calculatemachinesneeded command:', error);
+      await interaction.reply({
+        content: 'An error occurred while calculating machines needed. Please try again later.',
+        ephemeral: true,
+      });
   }
+}
 
-  else if (commandname === 'calculatemachinesneeded') {
-    const machineName = interaction.options.getString('machine name');
-    const itemName = interaction.options.getString('item name');
-    const itemsNeeded = interaction.options.getFloat('items needed');
-    const machineProcessSpeed = interaction.options.getFloat('machine process speed');
-
-    const fullMachinesNeeded = math.floor(itemsNeeded / machineProcessSpeed);
-    const percentOfAMachineNeeded = itemsNeeded % machinePorcessSpeed;
-
-    if (percentOfAMachineNeeded === 0) {
-      await interaction.reply({
-        content: 'To make ${itemsNeeded} ${itemName}/min you need ${fullMachinesNeeded} ${machineName}(s) all at 100% efficiency.',
-        ephemeral: true,
-      });
-    } else {
-      await interaction.reply({
-        content: 'To make ${itemsNeeded} ${itemName}/min you need ${fullMachinesNeeded} ${machineName}(s) at 100% efficiency and 1 ${machineName} at ${percentOfAMachineNeeded}% efficiency.',
-        ephemeral: true,
-      });
-    }
   }
 });
 
-// Initialize bot
 client.once('ready', async () => {
   console.log('Bot is online!');
-  
-  // Register the commands
   await registerCommands();
 });
 
-// Log in to Discord with your bot token
 client.login(token);
+
