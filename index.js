@@ -33,6 +33,25 @@ async function registerCommands() {
         option.setName('playtime')
           .setDescription('The playtime of the member in hours')
           .setRequired(true)),
+    new SlashCommandBuilder()
+      .setName('calculatemachinesneeded')
+      .setDescription('Calculate the amount of machines required to make a certain amount of items every minute').
+      .addStringOption(option =>
+        option.setName('machine name')
+          .setDescription('The name of the machine that produces the item')
+          .setRequired(true))
+      .addStringOption(option =>
+        option.setName('item name')
+          .setDescription('The name of the machine that produces the item')
+          .setRequired(true))
+      .addFloatOption(option => 
+        option.setName('items needed')
+          .setDescription('The amount of items to produce every minute')
+          .setRequired(true))
+      .addFloatOption(option => 
+        option.setName('machine process speed')
+          .setDescription('The amount of items one machine produces every minute')
+          .setRequired(true)),
 ]
 .map(command => command.toJSON());
 
@@ -160,11 +179,33 @@ client.on('interactionCreate', async (interaction) => {
 
       // Acknowledge the interaction
       await interaction.reply({
-        content: `Updated the role for ${guildMember.user.tag} based on their ${playtime} hours of playtime.`,
+        content: 'Updated the role for ${guildMember.user.tag} based on their ${playtime} hours of playtime.',
         ephemeral: true,
       });
     } else {
       await interaction.reply({ content: 'Invalid member or playtime provided.', ephemeral: true });
+    }
+  }
+
+  else if (commandname === 'calculatemachinesneeded') {
+    const machineName = interaction.options.getString('machine name');
+    const itemName = interaction.options.getString('item name');
+    const itemsNeeded = interaction.options.getFloat('items needed');
+    const machineProcessSpeed = interaction.options.getFloat('machine process speed');
+
+    const fullMachinesNeeded = math.floor(itemsNeeded / machineProcessSpeed);
+    const percentOfAMachineNeeded = itemsNeeded % machinePorcessSpeed;
+
+    if (percentOfAMachineNeeded === 0) {
+      await interaction.reply({
+        content: 'To make ${itemsNeeded} ${itemName}/min you need ${fullMachinesNeeded} ${machineName}(s) all at 100% efficiency.',
+        ephemeral: true,
+      });
+    } else {
+      await interaction.reply({
+        content: 'To make ${itemsNeeded} ${itemName}/min you need ${fullMachinesNeeded} ${machineName}(s) at 100% efficiency and 1 ${machineName} at ${percentOfAMachineNeeded}% efficiency.',
+        ephemeral: true,
+      });
     }
   }
 });
