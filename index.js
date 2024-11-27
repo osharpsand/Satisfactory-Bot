@@ -18,6 +18,12 @@ const client = new Client({
 });
 
 async function registerCommands() {
+  const guildId = process.env.GUILD_ID; // Fetch the guild ID from the .env file
+  if (!guildId) {
+    console.error('GUILD_ID is missing in the environment variables!');
+    process.exit(1);
+  }
+
   const commands = [
     new SlashCommandBuilder()
       .setName('updateplaytime')
@@ -34,25 +40,33 @@ async function registerCommands() {
       .setName('calculatemachinesneeded')
       .setDescription('Calculate machines needed for item production')
       .addStringOption(option =>
-        option.setName('machine_name')
+        option.setName('machine_name') // Ensure valid option names
           .setDescription('Name of the machine')
           .setRequired(true))
       .addStringOption(option =>
-        option.setName('item_name')
+        option.setName('item_name') // Ensure valid option names
           .setDescription('Name of the item')
           .setRequired(true))
       .addNumberOption(option => 
-        option.setName('items_needed')
+        option.setName('items_needed') // Ensure valid option names
           .setDescription('Items to produce per minute')
           .setRequired(true))
       .addNumberOption(option => 
-        option.setName('machine_process_speed')
+        option.setName('machine_process_speed') // Ensure valid option names
           .setDescription('Items one machine produces per minute')
           .setRequired(true)),
   ].map(command => command.toJSON());
 
-  await client.application.commands.set(commands);
+  try {
+    // Register commands for the specific guild
+    const guild = await client.guilds.fetch(guildId);
+    await guild.commands.set(commands);
+    console.log('Commands registered for guild:', guildId, commands);
+  } catch (error) {
+    console.error('Error registering commands:', error);
+  }
 }
+
 
 async function assignRoleBasedOnPlaytime(member, playtime) {
   try {
