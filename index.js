@@ -143,6 +143,7 @@ client.on('interactionCreate', async (interaction) => {
         content: 'An error occurred while calculating machines needed. Please try again later.',
         ephemeral: true,
       });
+    }
   }
 }
 
