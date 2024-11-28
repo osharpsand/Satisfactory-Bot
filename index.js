@@ -146,24 +146,49 @@ client.on('interactionCreate', async (interaction) => {
 
   const { commandName } = interaction;
 
+  // Update Playtime Command
   if (commandName === 'updateplaytime') {
-    const member = interaction.options.getUser('member');
-    const playtime = interaction.options.getInteger('playtime');
-    if (member && playtime !== null) {
-      const guildMember = await interaction.guild.members.fetch(member.id);
-      await assignRoleBasedOnPlaytime(guildMember, playtime);
-      await interaction.reply({
-        content: `Updated role for ${guildMember.user.tag} with ${playtime} hours of playtime.`,
-        ephemeral: true,
-      });
-    } else {
-      await interaction.reply({ content: 'Invalid inputs provided.', ephemeral: true });
-    }
-  } else if (commandName === 'calculatemachinesneeded') {
     try {
-      // Defer the interaction to prevent timeout errors
-      await interaction.deferReply({ ephemeral: true });
+      const member = interaction.options.getUser('member');
+      const playtime = interaction.options.getInteger('playtime');
 
+      if (!member || playtime === null) {
+        return interaction.reply({ content: 'Invalid member or playtime provided.', ephemeral: true });
+      }
+
+      const guildMember = await interaction.guild.members.fetch(member.id);
+      const roleName = getRoleByPlaytime(playtime);
+
+      if (!roleName) {
+        return interaction.reply({ content: 'No appropriate role found for the given playtime.', ephemeral: true });
+      }
+
+      const role = guildMember.guild.roles.cache.find(r => r.name === roleName);
+      if (!role) {
+        return interaction.reply({ content: `Role "${roleName}" not found in the server.`, ephemeral: true });
+      }
+
+      if (!guildMember.roles.cache.has(role.id)) {
+        await guildMember.roles.add(role);
+        return interaction.reply({
+          content: `Assigned the "${roleName}" role to ${guildMember.user.tag} for ${playtime} hours of playtime.`,
+          ephemeral: true,
+        });
+      } else {
+        return interaction.reply({
+          content: `${guildMember.user.tag} already has the "${roleName}" role.`,
+          ephemeral: true,
+        });
+      }
+    } catch (error) {
+      console.error('Error in updateplaytime command:', error);
+      return interaction.reply({ content: 'An error occurred. Please try again later.', ephemeral: true });
+    }
+  }
+
+  // Calculate Machines Needed Command
+  if (commandName === 'calculatemachinesneeded') {
+    try {
       const machineName = interaction.options.getString('machine_name');
       const itemName = interaction.options.getString('item_name');
       const itemsNeeded = interaction.options.getNumber('items_needed');
@@ -171,8 +196,9 @@ client.on('interactionCreate', async (interaction) => {
 
       // Validate inputs
       if (!machineName || !itemName || itemsNeeded <= 0 || machineProcessSpeed <= 0) {
-        return interaction.editReply({
+        return interaction.reply({
           content: 'Please ensure all inputs are valid and greater than zero.',
+          ephemeral: true,
         });
       }
 
@@ -180,19 +206,18 @@ client.on('interactionCreate', async (interaction) => {
       const remainder = itemsNeeded % machineProcessSpeed;
       const percentOfAMachineNeeded = (remainder / machineProcessSpeed) * 100;
 
-      // Construct reply
-      let reply = `To make ${itemsNeeded} ${itemName}/min, you need ${fullMachinesNeeded} ${machineName}(s) at 100% efficiency.`;
+      // Construct the response
+      let reply = `To produce ${itemsNeeded} ${itemName}/min, you need ${fullMachinesNeeded} ${machineName}(s) at 100% efficiency.`;
       if (remainder > 0) {
-        reply += ` Additionally, one ${machineName} will need to operate at ${percentOfAMachineNeeded.toFixed(5)}% efficiency.`;
+        reply += ` Additionally, one ${machineName} will need to operate at ${percentOfAMachineNeeded.toFixed(2)}% efficiency.`;
       }
 
-      await interaction.editReply({ content: reply });
+      return interaction.reply({ content: reply, ephemeral: true });
     } catch (error) {
       console.error('Error in calculatemachinesneeded command:', error);
-
-      // If an error occurs, ensure to respond or edit the reply
-      await interaction.editReply({
+      return interaction.reply({
         content: 'An error occurred while calculating machines needed. Please try again later.',
+        ephemeral: true,
       });
     }
   }
