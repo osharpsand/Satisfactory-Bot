@@ -1,6 +1,6 @@
 console.log('Starting');
 
-const { Client, GatewayIntentBits, SlashCommandBuilder } = require('discord.js');
+const { Client, GatewayIntentBits, SlashCommandBuilder, REST, Routes } = require('discord.js');
 require('./keep_alive.js');
 
 const token = process.env.BOT_TOKEN;
@@ -17,13 +17,41 @@ const client = new Client({
   ],
 });
 
-async function registerCommands() {
-  const guildId = process.env.GUILD_ID; // Fetch the guild ID from the .env file
-  if (!guildId) {
-    console.error('GUILD_ID is missing in the environment variables!');
-    process.exit(1);
-  }
+/**
+ * Clear all existing commands (global and specific guild)
+ */
+async function clearCommands() {
+  const rest = new REST({ version: '10' }).setToken(token);
 
+  try {
+    console.log('Fetching and clearing global application commands...');
+    const globalCommands = await rest.get(Routes.applicationCommands(client.user.id));
+    if (globalCommands.length > 0) {
+      console.log(`Clearing ${globalCommands.length} global commands...`);
+      await Promise.all(globalCommands.map(cmd => rest.delete(Routes.applicationCommand(client.user.id, cmd.id))));
+      console.log('Global commands cleared.');
+    }
+
+    // Clear guild-specific commands if GUILD_ID is provided
+    const guildId = process.env.GUILD_ID;
+    if (guildId) {
+      console.log(`Fetching and clearing commands for guild ${guildId}...`);
+      const guildCommands = await rest.get(Routes.applicationGuildCommands(client.user.id, guildId));
+      if (guildCommands.length > 0) {
+        console.log(`Clearing ${guildCommands.length} guild-specific commands...`);
+        await Promise.all(guildCommands.map(cmd => rest.delete(Routes.applicationGuildCommand(client.user.id, guildId, cmd.id))));
+        console.log('Guild-specific commands cleared.');
+      }
+    }
+  } catch (error) {
+    console.error('Error clearing commands:', error);
+  }
+}
+
+/**
+ * Register global application commands
+ */
+async function registerCommands() {
   const commands = [
     new SlashCommandBuilder()
       .setName('updateplaytime')
@@ -40,34 +68,37 @@ async function registerCommands() {
       .setName('calculatemachinesneeded')
       .setDescription('Calculate machines needed for item production')
       .addStringOption(option =>
-        option.setName('machine_name') // Ensure valid option names
+        option.setName('machine_name')
           .setDescription('Name of the machine')
           .setRequired(true))
       .addStringOption(option =>
-        option.setName('item_name') // Ensure valid option names
+        option.setName('item_name')
           .setDescription('Name of the item')
           .setRequired(true))
       .addNumberOption(option => 
-        option.setName('items_needed') // Ensure valid option names
+        option.setName('items_needed')
           .setDescription('Items to produce per minute')
           .setRequired(true))
       .addNumberOption(option => 
-        option.setName('machine_process_speed') // Ensure valid option names
+        option.setName('machine_process_speed')
           .setDescription('Items one machine produces per minute')
           .setRequired(true)),
   ].map(command => command.toJSON());
 
+  const rest = new REST({ version: '10' }).setToken(token);
+
   try {
-    // Register commands for the specific guild
-    const guild = await client.guilds.fetch(guildId);
-    await guild.commands.set(commands);
-    console.log('Commands registered for guild:', guildId, commands);
+    console.log('Registering global application commands...');
+    await rest.put(Routes.applicationCommands(client.user.id), { body: commands });
+    console.log('Global commands registered.');
   } catch (error) {
     console.error('Error registering commands:', error);
   }
 }
 
-
+/**
+ * Assign role based on playtime
+ */
 async function assignRoleBasedOnPlaytime(member, playtime) {
   try {
     const roleName = getRoleByPlaytime(playtime);
@@ -95,6 +126,9 @@ function getRoleByPlaytime(playtime) {
   return thresholds.find(t => playtime >= t.hours)?.role || null;
 }
 
+/**
+ * Event listeners
+ */
 client.on('guildMemberAdd', async (member) => {
   const roleName = 'Satisfactory Player';
   const role = member.guild.roles.cache.find(role => role.name === roleName);
@@ -132,7 +166,6 @@ client.on('interactionCreate', async (interaction) => {
       const itemsNeeded = interaction.options.getNumber('items_needed');
       const machineProcessSpeed = interaction.options.getNumber('machine_process_speed');
   
-      // Validate inputs
       if (!machineName || !itemName || itemsNeeded <= 0 || machineProcessSpeed <= 0) {
         return interaction.reply({
           content: 'Please ensure all inputs are valid and greater than zero.',
@@ -144,7 +177,6 @@ client.on('interactionCreate', async (interaction) => {
       const remainder = itemsNeeded % machineProcessSpeed;
       const percentOfAMachineNeeded = (remainder / machineProcessSpeed) * 100;
   
-      // Construct reply
       let reply = `To make ${itemsNeeded} ${itemName}/min, you need ${fullMachinesNeeded} ${machineName}(s) at 100% efficiency.`;
       if (remainder > 0) {
         reply += ` Additionally, one ${machineName} will need to operate at ${percentOfAMachineNeeded.toFixed(5)}% efficiency.`;
@@ -161,10 +193,17 @@ client.on('interactionCreate', async (interaction) => {
   }
 });
 
+/**
+ * Start the bot
+ */
 client.once('ready', async () => {
   console.log('Bot is online!');
+
+  // Clear all existing commands
+  await clearCommands();
+
+  // Register new commands globally
   await registerCommands();
 });
 
 client.login(token);
-
