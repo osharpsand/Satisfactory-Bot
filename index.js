@@ -56,16 +56,15 @@ async function registerCommands() {
           .setDescription('Items one machine produces per minute')
           .setRequired(true)),
   ].map(command => command.toJSON());
-
-  client.application.commands.set([]);
-
-  console.log('Global commands cleared!')
   
   try {
+    client.application.commands.set(commands);
+    console.log('Global commands set!');
+    
     // Register commands for the specific guild
     const guild = await client.guilds.fetch(guildId);
-    await guild.commands.set(commands);
-    console.log('Commands registered for guild:', guildId);
+    await guild.commands.set([]);
+    console.log('Commands cleared:', guildId);
   } catch (error) {
     console.error('Error registering commands:', error);
   }
