@@ -161,33 +161,38 @@ client.on('interactionCreate', async (interaction) => {
     }
   } else if (commandName === 'calculatemachinesneeded') {
     try {
+      // Defer the interaction to prevent timeout errors
+      await interaction.deferReply({ ephemeral: true });
+
       const machineName = interaction.options.getString('machine_name');
       const itemName = interaction.options.getString('item_name');
       const itemsNeeded = interaction.options.getNumber('items_needed');
       const machineProcessSpeed = interaction.options.getNumber('machine_process_speed');
-  
+
+      // Validate inputs
       if (!machineName || !itemName || itemsNeeded <= 0 || machineProcessSpeed <= 0) {
-        return interaction.reply({
+        return interaction.editReply({
           content: 'Please ensure all inputs are valid and greater than zero.',
-          ephemeral: true,
         });
       }
-  
+
       const fullMachinesNeeded = Math.floor(itemsNeeded / machineProcessSpeed);
       const remainder = itemsNeeded % machineProcessSpeed;
       const percentOfAMachineNeeded = (remainder / machineProcessSpeed) * 100;
-  
+
+      // Construct reply
       let reply = `To make ${itemsNeeded} ${itemName}/min, you need ${fullMachinesNeeded} ${machineName}(s) at 100% efficiency.`;
       if (remainder > 0) {
         reply += ` Additionally, one ${machineName} will need to operate at ${percentOfAMachineNeeded.toFixed(5)}% efficiency.`;
       }
-  
-      await interaction.reply({ content: reply, ephemeral: true });
+
+      await interaction.editReply({ content: reply });
     } catch (error) {
       console.error('Error in calculatemachinesneeded command:', error);
-      await interaction.reply({
+
+      // If an error occurs, ensure to respond or edit the reply
+      await interaction.editReply({
         content: 'An error occurred while calculating machines needed. Please try again later.',
-        ephemeral: true,
       });
     }
   }
