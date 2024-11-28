@@ -1,6 +1,6 @@
 console.log('Starting');
 
-const { Client, GatewayIntentBits, SlashCommandBuilder, REST, Routes } = require('discord.js');
+const { Client, GatewayIntentBits, SlashCommandBuilder } = require('discord.js');
 require('./keep_alive.js');
 
 const token = process.env.BOT_TOKEN;
@@ -14,45 +14,16 @@ const client = new Client({
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.GuildIntegrations,
   ],
 });
 
-/**
- * Clear all existing commands (global and specific guild)
- */
-async function clearCommands() {
-  const rest = new REST({ version: '10' }).setToken(token);
-
-  try {
-    console.log('Fetching and clearing global application commands...');
-    const globalCommands = await rest.get(Routes.applicationCommands(client.user.id));
-    if (globalCommands.length > 0) {
-      console.log(`Clearing ${globalCommands.length} global commands...`);
-      await Promise.all(globalCommands.map(cmd => rest.delete(Routes.applicationCommand(client.user.id, cmd.id))));
-      console.log('Global commands cleared.');
-    }
-
-    // Clear guild-specific commands if GUILD_ID is provided
-    const guildId = process.env.GUILD_ID;
-    if (guildId) {
-      console.log(`Fetching and clearing commands for guild ${guildId}...`);
-      const guildCommands = await rest.get(Routes.applicationGuildCommands(client.user.id, guildId));
-      if (guildCommands.length > 0) {
-        console.log(`Clearing ${guildCommands.length} guild-specific commands...`);
-        await Promise.all(guildCommands.map(cmd => rest.delete(Routes.applicationGuildCommand(client.user.id, guildId, cmd.id))));
-        console.log('Guild-specific commands cleared.');
-      }
-    }
-  } catch (error) {
-    console.error('Error clearing commands:', error);
-  }
-}
-
-/**
- * Register global application commands
- */
 async function registerCommands() {
+  const guildId = process.env.GUILD_ID; // Fetch the guild ID from the .env file
+  if (!guildId) {
+    console.error('GUILD_ID is missing in the environment variables!');
+    process.exit(1);
+  }
+
   const commands = [
     new SlashCommandBuilder()
       .setName('updateplaytime')
@@ -69,37 +40,34 @@ async function registerCommands() {
       .setName('calculatemachinesneeded')
       .setDescription('Calculate machines needed for item production')
       .addStringOption(option =>
-        option.setName('machine_name')
+        option.setName('machine_name') // Ensure valid option names
           .setDescription('Name of the machine')
           .setRequired(true))
       .addStringOption(option =>
-        option.setName('item_name')
+        option.setName('item_name') // Ensure valid option names
           .setDescription('Name of the item')
           .setRequired(true))
       .addNumberOption(option => 
-        option.setName('items_needed')
+        option.setName('items_needed') // Ensure valid option names
           .setDescription('Items to produce per minute')
           .setRequired(true))
       .addNumberOption(option => 
-        option.setName('machine_process_speed')
+        option.setName('machine_process_speed') // Ensure valid option names
           .setDescription('Items one machine produces per minute')
           .setRequired(true)),
   ].map(command => command.toJSON());
 
-  const rest = new REST({ version: '10' }).setToken(token);
-
   try {
-    console.log('Registering global application commands...');
-    await rest.put(Routes.applicationCommands(client.user.id), { body: commands });
-    console.log('Global commands registered.');
+    // Register commands for the specific guild
+    const guild = await client.guilds.fetch(guildId);
+    await guild.commands.set(commands);
+    console.log('Commands registered for guild:', guildId, commands);
   } catch (error) {
     console.error('Error registering commands:', error);
   }
 }
 
-/**
- * Assign role based on playtime
- */
+
 async function assignRoleBasedOnPlaytime(member, playtime) {
   try {
     const roleName = getRoleByPlaytime(playtime);
@@ -127,9 +95,6 @@ function getRoleByPlaytime(playtime) {
   return thresholds.find(t => playtime >= t.hours)?.role || null;
 }
 
-/**
- * Event listeners
- */
 client.on('guildMemberAdd', async (member) => {
   const roleName = 'Satisfactory Player';
   const role = member.guild.roles.cache.find(role => role.name === roleName);
@@ -147,54 +112,26 @@ client.on('interactionCreate', async (interaction) => {
 
   const { commandName } = interaction;
 
-  // Update Playtime Command
   if (commandName === 'updateplaytime') {
-    try {
-      const member = interaction.options.getUser('member');
-      const playtime = interaction.options.getInteger('playtime');
-
-      if (!member || playtime === null) {
-        return interaction.reply({ content: 'Invalid member or playtime provided.', ephemeral: true });
-      }
-
+    const member = interaction.options.getUser('member');
+    const playtime = interaction.options.getInteger('playtime');
+    if (member && playtime !== null) {
       const guildMember = await interaction.guild.members.fetch(member.id);
-      const roleName = getRoleByPlaytime(playtime);
-
-      if (!roleName) {
-        return interaction.reply({ content: 'No appropriate role found for the given playtime.', ephemeral: true });
-      }
-
-      const role = guildMember.guild.roles.cache.find(r => r.name === roleName);
-      if (!role) {
-        return interaction.reply({ content: `Role "${roleName}" not found in the server.`, ephemeral: true });
-      }
-
-      if (!guildMember.roles.cache.has(role.id)) {
-        await guildMember.roles.add(role);
-        return interaction.reply({
-          content: `Assigned the "${roleName}" role to ${guildMember.user.tag} for ${playtime} hours of playtime.`,
-          ephemeral: true,
-        });
-      } else {
-        return interaction.reply({
-          content: `${guildMember.user.tag} already has the "${roleName}" role.`,
-          ephemeral: true,
-        });
-      }
-    } catch (error) {
-      console.error('Error in updateplaytime command:', error);
-      return interaction.reply({ content: 'An error occurred. Please try again later.', ephemeral: true });
+      await assignRoleBasedOnPlaytime(guildMember, playtime);
+      await interaction.reply({
+        content: `Updated role for ${guildMember.user.tag} with ${playtime} hours of playtime.`,
+        ephemeral: true,
+      });
+    } else {
+      await interaction.reply({ content: 'Invalid inputs provided.', ephemeral: true });
     }
-  }
-
-  // Calculate Machines Needed Command
-  if (commandName === 'calculatemachinesneeded') {
+  } else if (commandName === 'calculatemachinesneeded') {
     try {
       const machineName = interaction.options.getString('machine_name');
       const itemName = interaction.options.getString('item_name');
       const itemsNeeded = interaction.options.getNumber('items_needed');
       const machineProcessSpeed = interaction.options.getNumber('machine_process_speed');
-
+  
       // Validate inputs
       if (!machineName || !itemName || itemsNeeded <= 0 || machineProcessSpeed <= 0) {
         return interaction.reply({
@@ -202,21 +139,21 @@ client.on('interactionCreate', async (interaction) => {
           ephemeral: true,
         });
       }
-
+  
       const fullMachinesNeeded = Math.floor(itemsNeeded / machineProcessSpeed);
       const remainder = itemsNeeded % machineProcessSpeed;
       const percentOfAMachineNeeded = (remainder / machineProcessSpeed) * 100;
-
-      // Construct the response
-      let reply = `To produce ${itemsNeeded} ${itemName}/min, you need ${fullMachinesNeeded} ${machineName}(s) at 100% efficiency.`;
+  
+      // Construct reply
+      let reply = `To make ${itemsNeeded} ${itemName}/min, you need ${fullMachinesNeeded} ${machineName}(s) at 100% efficiency.`;
       if (remainder > 0) {
-        reply += ` Additionally, one ${machineName} will need to operate at ${percentOfAMachineNeeded.toFixed(2)}% efficiency.`;
+        reply += ` Additionally, one ${machineName} will need to operate at ${percentOfAMachineNeeded.toFixed(5)}% efficiency.`;
       }
-
-      return interaction.reply({ content: reply, ephemeral: true });
+  
+      await interaction.reply({ content: reply, ephemeral: true });
     } catch (error) {
       console.error('Error in calculatemachinesneeded command:', error);
-      return interaction.reply({
+      await interaction.reply({
         content: 'An error occurred while calculating machines needed. Please try again later.',
         ephemeral: true,
       });
@@ -224,16 +161,8 @@ client.on('interactionCreate', async (interaction) => {
   }
 });
 
-/**
- * Start the bot
- */
 client.once('ready', async () => {
   console.log('Bot is online!');
-
-  // Clear all existing commands
-  await clearCommands();
-
-  // Register new commands globally
   await registerCommands();
 });
 
