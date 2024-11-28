@@ -57,6 +57,10 @@ async function registerCommands() {
           .setRequired(true)),
   ].map(command => command.toJSON());
 
+  client.application.commands.set([]);
+
+  cosole.log('Global commands cleared!')
+  
   try {
     // Register commands for the specific guild
     const guild = await client.guilds.fetch(guildId);
