@@ -61,7 +61,7 @@ async function registerCommands() {
     // Register commands for the specific guild
     const guild = await client.guilds.fetch(guildId);
     await guild.commands.set(commands);
-    console.log('Commands registered for guild:', guildId, commands);
+    console.log('Commands registered for guild:', guildId);
   } catch (error) {
     console.error('Error registering commands:', error);
   }
