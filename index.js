@@ -59,7 +59,7 @@ async function registerCommands() {
 
   client.application.commands.set([]);
 
-  cosole.log('Global commands cleared!')
+  console.log('Global commands cleared!')
   
   try {
     // Register commands for the specific guild
