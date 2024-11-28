@@ -18,12 +18,6 @@ const client = new Client({
 });
 
 async function registerCommands() {
-  const guildId = process.env.GUILD_ID; // Fetch the guild ID from the .env file
-  if (!guildId) {
-    console.error('GUILD_ID is missing in the environment variables!');
-    process.exit(1);
-  }
-
   const commands = [
     new SlashCommandBuilder()
       .setName('updateplaytime')
@@ -60,11 +54,7 @@ async function registerCommands() {
   try {
     client.application.commands.set(commands);
     console.log('Global commands set!');
-    
-    // Register commands for the specific guild
-    const guild = await client.guilds.fetch(guildId);
-    await guild.commands.set([]);
-    console.log('Commands cleared:', guildId);
+
   } catch (error) {
     console.error('Error registering commands:', error);
   }
