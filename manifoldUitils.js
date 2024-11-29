@@ -1,4 +1,4 @@
-function CalculateCompleteManifoldData(machineName, machinePower, itemName, outputSpeed, processSpeed, maxBeltSpeed, inputItems) {
+function CalculateCompleteManifoldData(machineName, machinePower, itemName, outputSpeed, processSpeed, maxBeltSpeed, maxPipeSpeed, solidOutput, inputItems) {
   // machines/ inputs outputs/ message
 
   //Message
@@ -10,18 +10,37 @@ function CalculateCompleteManifoldData(machineName, machinePower, itemName, outp
   const percentLeftOfMachine = remainderOfItemsToMachine / processSpeed * 100;
   const machinePowerEstimate = outputSpeed / processSpeed * machinePower;
 
-  if ( percentLeftOfMachine === 0 ) {
-    message += `You need ${machinesNeeded} ${machineName}(s)\n`;
-  } else {
-    message += `You need ${machinesNeeded}  ${machineName}(s) and 1 ${machineName} running at ${percentLeftOfMachine}%\n`;
+  let multipleOf = ``;
+  let formattedMachineName = machineName;
+  if ( machinesNeeded != 1 ) {
+    multipleOf = `s`;
+    formattedMachineName = machineName.replace(/y$/, `ies`);
+  }
+
+  
+  message += `You need ${machinesNeeded} ${formattedMachineName}${multipleOf} running at 100%`;
+  if ( percentLeftOfMachine != 0 ) {
+    message += ` and 1 ${machineName} running at ${percentLeftOfMachine}%`;
   }
 
   //Outputs
-  const outputBeltsNeeded = Math.floor(outputSpeed / maxBeltSpeed);
-  const remainderOfItemsLeft = outputSpeed % maxBeltSpeed;
-
-  if ( remainderOfItemsLeft === 0 ) {
+  let maxCarrierSpeed = maxBeltSpeed;
+  let outputType = `belt`;
+  if ( !solidOutput ) {
+    maxCarrierSpeed = maxPipeSpeed; 
+    outputType = `pipe`;
+  )
     
+  const outputCarriersNeeded = Math.floor(outputSpeed / maxCarrierSpeed);
+  const remainderOfItemsLeft = outputSpeed % maxCarrierSpeed;
+
+  multipleOf = ``;
+  if ( outputBeltsNeeded != ) { multipleOf = `s`; }
+
+  message += `.\nYou need ${outputCarriersNeeded} full ${outputType}${multipleOf} of ${maxCarrierSpeed} outputting ${carrierSpeed * outputCarriersNeeded} items/min`;
+
+  if ( remainderOfItemsLeft != 0 ) {
+    message += ` and 1 ${outputType} outputting ${remainderOfItemsLeft} items/min`;
   }
   
   //Inputs
@@ -30,5 +49,6 @@ function CalculateCompleteManifoldData(machineName, machinePower, itemName, outp
     
     
     
-  })
+  });
 }
+
