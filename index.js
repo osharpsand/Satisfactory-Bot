@@ -18,38 +18,7 @@ const client = new Client({
 });
 
 async function registerCommands() {
-  const commands = [
-    new SlashCommandBuilder()
-      .setName('updateplaytime')
-      .setDescription('Update a member\'s role based on their playtime')
-      .addUserOption(option => 
-        option.setName('member')
-          .setDescription('The member to update')
-          .setRequired(true))
-      .addIntegerOption(option => 
-        option.setName('playtime')
-          .setDescription('The playtime of the member in hours')
-          .setRequired(true)),
-    new SlashCommandBuilder()
-      .setName('calculatemachinesneeded')
-      .setDescription('Calculate machines needed for item production')
-      .addStringOption(option =>
-        option.setName('machine_name') // Ensure valid option names
-          .setDescription('Name of the machine')
-          .setRequired(true))
-      .addStringOption(option =>
-        option.setName('item_name') // Ensure valid option names
-          .setDescription('Name of the item')
-          .setRequired(true))
-      .addNumberOption(option => 
-        option.setName('items_needed') // Ensure valid option names
-          .setDescription('Items to produce per minute')
-          .setRequired(true))
-      .addNumberOption(option => 
-        option.setName('machine_process_speed') // Ensure valid option names
-          .setDescription('Items one machine produces per minute')
-          .setRequired(true)),
-  ].map(command => command.toJSON());
+  const commands = require("./commands.json");
   
   try {
     client.application.commands.set(commands);
