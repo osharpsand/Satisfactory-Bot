@@ -1,4 +1,4 @@
-function CalculateCompleteManifoldData(machineName, machinePower, itemName, outputSpeed, processSpeed, maxBeltSpeed, maxPipeSpeed, solidOutput, inputItems) {
+exports.CalculateCompleteManifoldData = function(machineName, machinePower, itemName, outputSpeed, processSpeed, maxBeltSpeed, maxPipeSpeed, solidOutput, inputItems) {
   // machines/ inputs outputs/ message
 
   //Message
@@ -44,11 +44,25 @@ function CalculateCompleteManifoldData(machineName, machinePower, itemName, outp
   }
   
   //Inputs
+  message += `\n\nIndividual input items breakdown:`;
+  
+  inputItems.foreach(itemData => {
 
-  inputItems.foreach(ItemData => {
+    let amountNeeded = outputSpeed / processSpeed * itemData.usageSpeed;
+    let isSolid = itemData.isSolid;
+    let carrierSpeed = maxBeltSpeed; 
+    let carrierName = `belt`;
+    if ( !isSolid ) { carrierSpeed = maxPipeSpeed; carrierName = `pipe`; }
+    let fullInputsNeeded = Math.floor( amountNeeded / carrierSpeed );
+    if ( fullInputsNeeded != 0 ) { carrierName += `s`; }
+    let remainderInputsNeeded = amountNeeded % carrierSpeed;
+    let machinesPerInput = 0;
+
+    for(let machineIndex = 0; )
     
-    
-    
+    message += `\n${itemData.itemName}:\n  You need ${amountNeeded}/min.\n  You need ${fullInputsNeeded} full ${carrierName}`;
+    if ( remainderInputsNeeded != 0 ) { message += `and 1 ${carrierName} inputting ${remainderItemsNeeded}`; }
+    message += `.\n You should expect the longest manifold to saturate in ${0} minutes`;
   });
 }
 
