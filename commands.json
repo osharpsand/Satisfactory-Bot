@@ -1,0 +1,30 @@
+[
+  {
+    options: [ [Object], [Object] ],
+    name: 'updateplaytime',
+    name_localizations: undefined,
+    description: "Update a member's role based on their playtime",
+    description_localizations: undefined,
+    contexts: undefined,
+    default_permission: undefined,
+    default_member_permissions: undefined,
+    dm_permission: undefined,
+    integration_types: undefined,
+    nsfw: undefined,
+    type: 1
+  },
+  {
+    options: [ [Object], [Object], [Object], [Object] ],
+    name: 'calculatemachinesneeded',
+    name_localizations: undefined,
+    description: 'Calculate machines needed for item production',
+    description_localizations: undefined,
+    contexts: undefined,
+    default_permission: undefined,
+    default_member_permissions: undefined,
+    dm_permission: undefined,
+    integration_types: undefined,
+    nsfw: undefined,
+    type: 1
+  }
+]
