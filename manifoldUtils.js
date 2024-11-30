@@ -27,7 +27,7 @@ exports.CalculateCompleteManifoldData = function (
   // Adding machines information to the message
   message += `You need ${machinesNeeded} ${formattedMachineName} running at 100%`;
   if (percentLeftOfMachine !== 0) {
-    message += ` and 1 ${machineName} running at ${percentLeftOfMachine.toFixed(2)}%`;
+    message += ` and 1 ${machineName} running at ${percentLeftOfMachine.toFixed(5)}%`;
   }
 
   // **Output Carrier Calculation**
@@ -64,12 +64,12 @@ exports.CalculateCompleteManifoldData = function (
 
     // Add input item breakdown to the message
     let pluralizedCarrierName = fullInputsNeeded !== 1 ? `${carrierName}s` : carrierName;
-    message += `\n${itemData.itemName}:\n  - Required: ${amountNeeded.toFixed(2)}/min`;
+    message += `\n\n${itemData.itemName}:  - Required: ${amountNeeded.toFixed(2)}/min`;
     message += `\n  - Carriers: ${fullInputsNeeded} full ${pluralizedCarrierName}`;
     if (remainderInputsNeeded !== 0) {
       message += ` and 1 ${carrierName} carrying ${remainderInputsNeeded.toFixed(2)} items/min`;
     }
-    message += `.\n  - Longest manifold connects to ${machinesPerInput.toFixed(2)} ${formattedMachineName}`;
+    message += `.\n  - The longest manifold should connect to ${machinesPerInput.toFixed(2)} ${formattedMachineName}`;
   });
 
   // Return the formatted message
