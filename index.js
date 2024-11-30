@@ -168,7 +168,7 @@ client.on('interactionCreate', async (interaction) => {
         processSpeed,
         maxBeltSpeed,
         maxPipeSpeed,
-        solidOutput,
+        solidOutput ?? true,
         inputItems
       );
 
