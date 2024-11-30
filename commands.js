@@ -1,3 +1,5 @@
+const { SlashCommandBuilder } = require('discord.js');
+
 exports.commands = [
   new SlashCommandBuilder()
     .setName('updateplaytime')
