@@ -10,7 +10,7 @@ exports.CalculateCompleteManifoldData = function (
   inputItems
 ) {
   // Initialize the message string
-  let message = `Complete Breakdown:\n`;
+  let message = `Complete Breakdown:\n\nTo make ${outputSpeed} ${itemName}/min\n`;
 
   // **Machines Calculation**
   const machinesNeeded = Math.floor(outputSpeed / processSpeed);
@@ -30,6 +30,8 @@ exports.CalculateCompleteManifoldData = function (
     message += ` and 1 ${machineName} running at ${percentLeftOfMachine.toFixed(5)}%`;
   }
 
+  message += `. Which should use about ${machinePowerEstimate}MW.`;
+
   // **Output Carrier Calculation**
   let maxCarrierSpeed = solidOutput ? maxBeltSpeed : maxPipeSpeed;
   let outputType = solidOutput ? `belt` : `pipe`;
@@ -38,14 +40,14 @@ exports.CalculateCompleteManifoldData = function (
   const remainderOfItemsLeft = outputSpeed % maxCarrierSpeed;
 
   multipleOf = outputCarriersNeeded !== 1 ? `s` : ``;
-  message += `.\nYou need ${outputCarriersNeeded} full ${outputType}${multipleOf} at ${maxCarrierSpeed} items/min`;
+  message += `\nYou need ${outputCarriersNeeded} full ${outputType}${multipleOf} at ${maxCarrierSpeed} items/min`;
 
   if (remainderOfItemsLeft !== 0) {
     message += ` and 1 ${outputType} handling ${remainderOfItemsLeft} items/min`;
   }
 
   // **Inputs Calculation**
-  message += `\n\nIndividual input items breakdown:`;
+  message += `.\n\nIndividual input items breakdown:`;
 
   inputItems.forEach((itemData) => {
     // If itemData.isSolid is null or undefined, assume the item is solid (use belt)
@@ -64,8 +66,8 @@ exports.CalculateCompleteManifoldData = function (
 
     // Add input item breakdown to the message
     let pluralizedCarrierName = fullInputsNeeded !== 1 ? `${carrierName}s` : carrierName;
-    message += `\n\n${itemData.itemName}:  - Required: ${amountNeeded.toFixed(2)}/min`;
-    message += `\n  - Carriers: ${fullInputsNeeded} full ${pluralizedCarrierName}`;
+    message += `\n\n${itemData.itemName}:\n  - Required: ${amountNeeded.toFixed(2)}/min`;
+    message += `\n  - You need ${fullInputsNeeded} full ${pluralizedCarrierName}`;
     if (remainderInputsNeeded !== 0) {
       message += ` and 1 ${carrierName} carrying ${remainderInputsNeeded.toFixed(2)} items/min`;
     }
