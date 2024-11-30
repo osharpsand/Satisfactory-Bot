@@ -176,7 +176,7 @@ client.on('interactionCreate', async (interaction) => {
     } catch (error) {
       console.error('Error in completebreakdown command:', error);
       await interaction.reply({
-        content: "An error occurred while calculating the complete breakdown. Please make sure the command you enter has all the important data. Also it is possible I got updated and my commands aren't working right now. Try again in 30 minutes.",
+        content: `An error occurred while calculating the complete breakdown. Please make sure the command you enter has all the important data. Also it is possible I got updated and my commands aren't working right now. Try again in 30 minutes.`,
         ephemeral: true,
       });
     }
