@@ -18,7 +18,7 @@ const client = new Client({
 });
 
 async function registerCommands() {
-  const commands = require("./commands.json");
+  const commands = require("./commands.js").commands;
   
   try {
     client.application.commands.set(commands);
