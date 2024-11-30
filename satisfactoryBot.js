@@ -141,7 +141,7 @@ client.on('interactionCreate', async (interaction) => {
       const machineName = interaction.options.getString('machine_name');
       const machinePower = interaction.options.getNumber('machine_power');
       const itemName = interaction.options.getString('item_name');
-      const outputSpeed = interaction.options.getNumber('output_speed');
+      const outputSpeed = interaction.options.getNumber('total_production_speed');
       const processSpeed = interaction.options.getNumber('process_speed');
       const maxBeltSpeed = interaction.options.getNumber('max_belt_speed');
       const maxPipeSpeed = interaction.options.getNumber('max_pipe_speed');
@@ -176,7 +176,7 @@ client.on('interactionCreate', async (interaction) => {
     } catch (error) {
       console.error('Error in completebreakdown command:', error);
       await interaction.reply({
-        content: 'An error occurred while calculating the complete breakdown. Please make sure the command you enter has all the important data..',
+        content: "An error occurred while calculating the complete breakdown. Please make sure the command you enter has all the important data. Also it is possible I got updated and my commands aren't working right now. Try again in 30 minutes.",
         ephemeral: true,
       });
     }
