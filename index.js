@@ -22,7 +22,7 @@ async function registerCommands() {
   
   try {
     client.application.commands.set(commands);
-    console.log('Global commands set!');
+    console.log('Global commands set to:', commands);
 
   } catch (error) {
     console.error('Error registering commands:', error);
