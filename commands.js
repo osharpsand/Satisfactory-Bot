@@ -47,7 +47,7 @@ exports.commands = [
         .setDescription('Name of the item to produce')
         .setRequired(true))
     .addNumberOption(option =>
-      option.setName('output_speed')
+      option.setName('total_production_speed')
         .setDescription('Speed of output per minute')
         .setRequired(true))
     .addNumberOption(option =>
@@ -57,11 +57,11 @@ exports.commands = [
     .addNumberOption(option =>
       option.setName('max_belt_speed')
         .setDescription('Maximum belt speed for output')
-        .setRequired(true))
+        .setRequired(false))
     .addNumberOption(option =>
       option.setName('max_pipe_speed')
         .setDescription('Maximum pipe speed for output')
-        .setRequired(true))
+        .setRequired(false))
     .addBooleanOption(option =>
       option.setName('solid_output')
         .setDescription('Is the output solid? (True/False)')
