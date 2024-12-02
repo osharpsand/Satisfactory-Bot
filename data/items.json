@@ -1,4 +1,5 @@
 [
+  
   {
     "itemName": "Iron Ore",
     "isBase": true,
@@ -10,9 +11,71 @@
     "extractorName": "Miner"
   },
   {
+    "itemName": "Coal",
+    "isBase": true,
+    "extractorName": "Miner"
+  },
+  {
+    "itemName": "Water",
+    "isLiquid": true,
+    "isBase": true,
+    "extractorName": "Water Extractor"
+  },
+
+  
+  {
     "itemName": "Iron Ingot"
   },
   {
+    "itemName": "Iron Rod"
+  },
+  {
     "itemName": "Iron Plate"
+  },
+  {
+    "itemName": "Screw"
+  },
+  {
+    "itemName": "Rotor"
+  },
+  {
+    "itemName": "Reinforced Iron Plate"
+  },
+  {
+    "itemName": "Modular Frame"
+  },
+  {
+    "itemName": "Smart Plating"
+  },
+
+  
+  {
+    "itemName": "Copper Ingot"
+  },
+  {
+    "itemName": "Wire"
+  },
+  {
+    "itemName": "Cable"
+  },
+  {
+    "itemName": "Copper Sheet"
+  },
+
+
+  {
+    "itemName": "Steel Ingot"
+  },
+  {
+    "itemName": "Steel Beam"
+  },
+  {
+    "itemName": "Steel pipe"
+  },
+  {
+    "itemName": "Encased Industrial Beam"
+  },
+  {
+    "itemName": "Stator"
   }
 ]
