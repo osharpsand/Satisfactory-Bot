@@ -1,0 +1,15 @@
+[
+  {
+    "itemName": "Iron Ore",
+    "isBase": true,
+    "extractorName": "Miner"
+  },
+  {
+    "itemName": "Copper Ore",
+    "isBase": true
+    "extractorName": "Miner"
+  },
+  {
+    "itemName": "Iron Ingot",
+  }
+]
