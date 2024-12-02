@@ -6,10 +6,13 @@
   },
   {
     "itemName": "Copper Ore",
-    "isBase": true
+    "isBase": true,
     "extractorName": "Miner"
   },
   {
-    "itemName": "Iron Ingot",
+    "itemName": "Iron Ingot"
+  },
+  {
+    "itemName": "Iron Plate"
   }
 ]
