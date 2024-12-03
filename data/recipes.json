@@ -148,4 +148,22 @@
     }]
     
   },
+
+
+
+  {
+    
+    "itemName": "Steel Ingot",
+    "recipieProduces": 45,
+    "recipieMachine": "Foundry",
+    
+    "recipieResources": [{
+      "itemName": "Iron Ore",
+      "amountNeeded": 45
+    },{
+      "itemName": "Coal",
+      "amountNeeded": 45
+    }]
+    
+  }
 ]
