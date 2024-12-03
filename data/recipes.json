@@ -1,1 +1,151 @@
+[
+  {
+    
+    "itemName": "Iron Ingot",
+    "recipieProduces": 30,
+    "recipieMachine": "Smelter",
+    
+    "recipieResources": [{
+      "itemName": "Iron Ore",
+      "amountNeeded": 30
+    }]
+    
+  },{
 
+    "itemName": "Iron Rod",
+    "recipieProduction": 15,
+    "recipieMachine": "Machine",
+
+    "recipieResources": [{
+      "itemName": "Iron Ingot",
+      "amountNeeded": 15
+    }]
+    
+  },{
+    
+    "itemName": "Iron Plate",
+    "recipieProduces": 20,
+    "recipieMachine": "Constructor",
+    
+    "recipieResources": [{
+      "itemName": "Iron Ingot",
+      "amountNeeded": 30
+    }]
+    
+  },{
+    
+    "itemName": "Screw",
+    "recipieProduces": 40,
+    "recipieMachine": "Constructor",
+    
+    "recipieResources": [{
+      "itemName": "Iron Rod",
+      "amountNeeded": 10
+    }]
+    
+  },{
+    
+    "itemName": "Rotor",
+    "recipieProduces": 4,
+    "recipieMachine": "Assembler",
+    
+    "recipieResources": [{
+      "itemName": "Iron Rod",
+      "amountNeeded": 20
+    },{
+      "itemName": "Screw",
+      "amountNeeded": 100
+    }]
+    
+  },{
+    
+    "itemName": "Reinforced Iron Plate",
+    "recipieProduces": 5,
+    "recipieMachine": "Assembler",
+    
+    "recipieResources": [{
+      "itemName": "Iron Plate",
+      "amountNeeded": 30
+    },{
+      "itemName": "Screw",
+      "amountNeeded": 60
+    }]
+    
+  },{
+    
+    "itemName": "Modular Frame",
+    "recipieProduces": 2,
+    "recipieMachine": "Assembler",
+    
+    "recipieResources": [{
+      "itemName": "Iron Rod",
+      "amountNeeded": 12
+    },{
+      "itemName": "Reinforced Iron Plate",
+      "amountNeeded": 3
+    }]
+    
+  },{
+    
+    "itemName": "Smart Plating",
+    "recipieProduces": 2,
+    "recipieMachine": "Assembler",
+    
+    "recipieResources": [{
+      "itemName": "Rotor",
+      "amountNeeded": 2
+    },{
+      "itemName": "Reinforced Iron Plate",
+      "amountNeeded": 2
+    }]
+    
+  },
+
+
+  
+  {
+    
+    "itemName": "Copper Ingot",
+    "recipieProduces": 30,
+    "recipieMachine": "Smelter",
+    
+    "recipieResources": [{
+      "itemName": "Copper Ore",
+      "amountNeeded": 30
+    }]
+    
+  },{
+    
+    "itemName": "Wire",
+    "recipieProduces": 30,
+    "recipieMachine": "Smelter",
+    
+    "recipieResources": [{
+      "itemName": "Copper Ingot",
+      "amountNeeded": 15
+    }]
+    
+  },{
+    
+    "itemName": "Cable",
+    "recipieProduces": 30,
+    "recipieMachine": "Smelter",
+    
+    "recipieResources": [{
+      "itemName": "Wire",
+      "amountNeeded": 60
+    }]
+    
+  },{
+    
+    "itemName": "Copper Sheet",
+    "recipieProduces": 10,
+    "recipieMachine": "Smelter",
+    
+    "recipieResources": [{
+      "itemName": "Copper Ingot",
+      "amountNeeded": 20
+    }]
+    
+  },
+]
