@@ -1,80 +1,470 @@
 [
-  {
-    "itemName": "Iron Ore",
-    "isBase": true,
-    "extractorName": "Miner"
-  },
-  {
-    "itemName": "Copper Ore",
-    "isBase": true,
-    "extractorName": "Miner"
-  },
-  {
-    "itemName": "Coal",
-    "isBase": true,
-    "extractorName": "Miner"
-  },
-  {
-    "itemName": "Water",
-    "isLiquid": true,
-    "isBase": true,
-    "extractorName": "Water Extractor"
-  },
-
-  
-  {
-    "itemName": "Iron Ingot"
-  },
-  {
-    "itemName": "Iron Rod"
-  },
-  {
-    "itemName": "Iron Plate"
-  },
-  {
-    "itemName": "Screw"
-  },
-  {
-    "itemName": "Rotor"
-  },
-  {
-    "itemName": "Reinforced Iron Plate"
-  },
-  {
-    "itemName": "Modular Frame"
-  },
-  {
-    "itemName": "Smart Plating"
-  },
-
-  
-  {
-    "itemName": "Copper Ingot"
-  },
-  {
-    "itemName": "Wire"
-  },
-  {
-    "itemName": "Cable"
-  },
-  {
-    "itemName": "Copper Sheet"
-  },
-
-
-  {
-    "itemName": "Steel Ingot"
-  },
-  {
-    "itemName": "Steel Beam"
-  },
-  {
-    "itemName": "Steel pipe"
-  },
-  {
-    "itemName": "Encased Industrial Beam"
-  },
-  {
-    "itemName": "Stator"
-  }
+    {
+        "itemName": "Iron Ore"
+    },
+    {
+        "itemName": "Copper Ore"
+    },
+    {
+        "itemName": "Coal"
+    },
+    {
+        "itemName": "Iron Ingot"
+    },
+    {
+        "itemName": "Copper Ingot"
+    },
+    {
+        "itemName": "Steel Ingot"
+    },
+    {
+        "itemName": "Iron Plate"
+    },
+    {
+        "itemName": "Iron Rod"
+    },
+    {
+        "itemName": "Wire"
+    },
+    {
+        "itemName": "Cable"
+    },
+    {
+        "itemName": "Biomass"
+    },
+    {
+        "itemName": "Concrete"
+    },
+    {
+        "itemName": "Leaves"
+    },
+    {
+        "itemName": "Limestone"
+    },
+    {
+        "itemName": "Screw"
+    },
+    {
+        "itemName": "Wood"
+    },
+    {
+        "itemName": "Hog Remains"
+    },
+    {
+        "itemName": "Spitter Remains"
+    },
+    {
+        "itemName": "Stinger Remains"
+    },
+    {
+        "itemName": "Hatcher Remains"
+    },
+    {
+        "itemName": "Alien Protein"
+    },
+    {
+        "itemName": "Alien DNA Capsule"
+    },
+    {
+        "itemName": "Blue Power Slug"
+    },
+    {
+        "itemName": "Yellow Power Slug"
+    },
+    {
+        "itemName": "Purple Power Slug"
+    },
+    {
+        "itemName": "Power Shard"
+    },
+    {
+        "itemName": "Mycelia"
+    },
+    {
+        "itemName": "Solid Biofuel"
+    },
+    {
+        "itemName": "Steel Beam"
+    },
+    {
+        "itemName": "Steel Pipe"
+    },
+    {
+        "itemName": "Reinforced Iron Plate"
+    },
+    {
+        "itemName": "Rotor"
+    },
+    {
+        "itemName": "Modular Frame"
+    },
+    {
+        "itemName": "Encased Industrial Beam"
+    },
+    {
+        "itemName": "Stator"
+    },
+    {
+        "itemName": "Motor"
+    },
+    {
+        "itemName": "Circuit Board"
+    },
+    {
+        "itemName": "Plastic"
+    },
+    {
+        "itemName": "Rubber"
+    },
+    {
+        "itemName": "Heavy Modular Frame"
+    },
+    {
+        "itemName": "Computer"
+    },
+    {
+        "itemName": "Caterium Ore"
+    },
+    {
+        "itemName": "Caterium Ingot"
+    },
+    {
+        "itemName": "Quickwire"
+    },
+    {
+        "itemName": "Supercomputer"
+    },
+    {
+        "itemName": "High-Speed Connector"
+    },
+    {
+        "itemName": "AI Limiter"
+    },
+    {
+        "itemName": "Fabric"
+    },
+    {
+        "itemName": "Gas Filter"
+    },
+    {
+        "itemName": "Raw Quartz"
+    },
+    {
+        "itemName": "Quartz Crystal"
+    },
+    {
+        "itemName": "Crystal Oscillator"
+    },
+    {
+        "itemName": "Sulfur"
+    },
+    {
+        "itemName": "Black Powder"
+    },
+    {
+        "itemName": "Smokeless Powder"
+    },
+    {
+        "itemName": "Nobelisk"
+    },
+    {
+        "itemName": "Gas Nobelisk"
+    },
+    {
+        "itemName": "Pulse Nobelisk"
+    },
+    {
+        "itemName": "Cluster Nobelisk"
+    },
+    {
+        "itemName": "Nuke Nobelisk"
+    },
+    {
+        "itemName": "Compacted Coal"
+    },
+    {
+        "itemName": "Silica"
+    },
+    {
+        "itemName": "Bauxite"
+    },
+    {
+        "itemName": "Aluminum Ingot"
+    },
+    {
+        "itemName": "Alclad Aluminum Sheet"
+    },
+    {
+        "itemName": "Heat Sink"
+    },
+    {
+        "itemName": "Radio Control Unit"
+    },
+    {
+        "itemName": "Turbo Motor"
+    },
+    {
+        "itemName": "Battery"
+    },
+    {
+        "itemName": "Uranium"
+    },
+    {
+        "itemName": "Encased Uranium Cell"
+    },
+    {
+        "itemName": "Electromagnetic Control Rod"
+    },
+    {
+        "itemName": "Uranium Fuel Rod"
+    },
+    {
+        "itemName": "Iodine Infused Filter"
+    },
+    {
+        "itemName": "Aluminum Scrap"
+    },
+    {
+        "itemName": "Copper Sheet"
+    },
+    {
+        "itemName": "Polymer Resin"
+    },
+    {
+        "itemName": "Petroleum Coke"
+    },
+    {
+        "itemName": "Non-fissile Uranium"
+    },
+    {
+        "itemName": "Plutonium Pellet"
+    },
+    {
+        "itemName": "Encased Plutonium Cell"
+    },
+    {
+        "itemName": "Plutonium Fuel Rod"
+    },
+    {
+        "itemName": "Copper Powder"
+    },
+    {
+        "itemName": "Pressure Conversion Cube"
+    },
+    {
+        "itemName": "Empty Canister"
+    },
+    {
+        "itemName": "Packaged Water"
+    },
+    {
+        "itemName": "Packaged Oil"
+    },
+    {
+        "itemName": "Packaged Fuel"
+    },
+    {
+        "itemName": "Packaged Turbofuel"
+    },
+    {
+        "itemName": "Packaged Heavy Oil Residue"
+    },
+    {
+        "itemName": "Packaged Liquid Biofuel"
+    },
+    {
+        "itemName": "Packaged Alumina Solution"
+    },
+    {
+        "itemName": "Packaged Sulfuric Acid"
+    },
+    {
+        "itemName": "Packaged Nitrogen Gas"
+    },
+    {
+        "itemName": "Packaged Nitric Acid"
+    },
+    {
+        "itemName": "Packaged Rocket Fuel"
+    },
+    {
+        "itemName": "Packaged Ionized Fuel"
+    },
+    {
+        "itemName": "Smart Plating"
+    },
+    {
+        "itemName": "Versatile Framework"
+    },
+    {
+        "itemName": "Automated Wiring"
+    },
+    {
+        "itemName": "Modular Engine"
+    },
+    {
+        "itemName": "Adaptive Control Unit"
+    },
+    {
+        "itemName": "Assembly Director System"
+    },
+    {
+        "itemName": "Magnetic Field Generator"
+    },
+    {
+        "itemName": "Thermal Propulsion Rocket"
+    },
+    {
+        "itemName": "Nuclear Pasta"
+    },
+    {
+        "itemName": "Portable Miner"
+    },
+    {
+        "itemName": "Aluminum Casing"
+    },
+    {
+        "itemName": "Empty Fluid Tank"
+    },
+    {
+        "itemName": "Cooling System"
+    },
+    {
+        "itemName": "Fused Modular Frame"
+    },
+    {
+        "itemName": "Uranium Waste"
+    },
+    {
+        "itemName": "Plutonium Waste"
+    },
+    {
+        "itemName": "SAM"
+    },
+    {
+        "itemName": "Reanimated SAM"
+    },
+    {
+        "itemName": "SAM Fluctuator"
+    },
+    {
+        "itemName": "Iron Rebar"
+    },
+    {
+        "itemName": "Stun Rebar"
+    },
+    {
+        "itemName": "Shatter Rebar"
+    },
+    {
+        "itemName": "Explosive Rebar"
+    },
+    {
+        "itemName": "Rifle Ammo"
+    },
+    {
+        "itemName": "Homing Rifle Ammo"
+    },
+    {
+        "itemName": "Turbo Rifle Ammo"
+    },
+    {
+        "itemName": "Diamonds"
+    },
+    {
+        "itemName": "Time Crystal"
+    },
+    {
+        "itemName": "Ficsite Ingot"
+    },
+    {
+        "itemName": "Ficsite Trigon"
+    },
+    {
+        "itemName": "Dark Matter Crystal"
+    },
+    {
+        "itemName": "Ficsonium"
+    },
+    {
+        "itemName": "Ficsonium Fuel Rod"
+    },
+    {
+        "itemName": "Superposition Oscillator"
+    },
+    {
+        "itemName": "Neural-Quantum Processor"
+    },
+    {
+        "itemName": "Singularity Cell"
+    },
+    {
+        "itemName": "Ballistic Warp Drive"
+    },
+    {
+        "itemName": "AI Expansion Server"
+    },
+    {
+        "itemName": "Alien Power Matrix"
+    },
+    {
+        "itemName": "Water",
+        "isLiquid": true
+    },
+    {
+        "itemName": "Crude Oil",
+        "isLiquid": true
+    },
+    {
+        "itemName": "Fuel",
+        "isLiquid": true
+    },
+    {
+        "itemName": "Turbofuel",
+        "isLiquid": true
+    },
+    {
+        "itemName": "Heavy Oil Residue",
+        "isLiquid": true
+    },
+    {
+        "itemName": "Liquid Biofuel",
+        "isLiquid": true
+    },
+    {
+        "itemName": "Alumina Solution",
+        "isLiquid": true
+    },
+    {
+        "itemName": "Sulfuric Acid",
+        "isLiquid": true
+    },
+    {
+        "itemName": "Nitrogen Gas",
+        "isLiquid": true
+    },
+    {
+        "itemName": "Nitric Acid",
+        "isLiquid": true
+    },
+    {
+        "itemName": "Dissolved Silica",
+        "isLiquid": true
+    },
+    {
+        "itemName": "Rocket Fuel",
+        "isLiquid": true
+    },
+    {
+        "itemName": "Dark Matter Residue",
+        "isLiquid": true
+    },
+    {
+        "itemName": "Excited Photonic Matter",
+        "isLiquid": true
+    },
+    {
+        "itemName": "Ionized Fuel",
+        "isLiquid": true
+    }
 ]
