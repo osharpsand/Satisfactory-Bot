@@ -1,7 +1,7 @@
 console.log('Starting');
 
 const { Client, GatewayIntentBits, SlashCommandBuilder } = require('discord.js');
-const { CalculateCompleteManifoldData } = require('./manifoldUtils.js');
+const { CalculateCompleteManifoldData } = require('./calculator/calculatorTools.js');
 require('./keep_alive.js');
 
 const token = process.env.BOT_TOKEN;
