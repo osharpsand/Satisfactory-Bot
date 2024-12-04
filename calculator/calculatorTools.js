@@ -1,4 +1,4 @@
-exports.CalculateCompleteManifoldData = function (
+exports.CalculateCompleteBreakdownData = function (
   machineName,
   machinePower,
   itemName,
